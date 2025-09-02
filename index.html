@@ -663,7 +663,8 @@
                     } catch (error) {
                         console.error('验证授权码失败:', error);
                         authError.value = true;
-                        authErrorMessage.value = '系统错误，请稍后重试';
+                        authErrorMessage.value = '授权码错误，请重新输入';
+                        //authErrorMessage.value = '系统错误，请稍后重试';
                     }
                 };
                 
