@@ -1,0 +1,318 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://res.wx.qq.com https://res2.wx.qq.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://res.wx.qq.com https://res2.wx.qq.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.qq.com; connect-src * 'self'; form-action 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="ALLOW-FROM https://weixin110.qq.com">
+    <meta http-equiv="Referrer-Policy" content="no-referrer-when-downgrade">
+    <!-- 微信分享信息设置 -->
+    <meta property="og:title" content="心理测试记录">
+    <meta property="og:description" content="查看您的心理测试历史记录和分析结果">
+    <meta property="og:image" content="http://你的域名/images/logo.png">
+    <meta property="og:url" content="http://你的域名/mytests.html">
+    <title>我的测试 - 心理测试</title>
+    <link rel="stylesheet" href="static/css/life001.web.prod.css">
+    <link rel="stylesheet" href="static/css/footer-nav.css">
+    <script src="static/js/vue.global.prod.min.js"></script>
+    <script src="static/js/auth.js"></script>
+    <!-- 微信JS-SDK -->
+    <script src="static/js/jweixin-1.6.0.js"></script>
+    <style>
+        /* 基础样式 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            margin: 0;
+            padding: 0;
+            background: #f7fafc;
+        }
+
+        /* 头部样式 */
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 0.7rem 0;
+            text-align: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 1.8rem;
+        }
+
+        /* 内容区域 */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* 测试报告列表 */
+        .test-list {
+            margin-bottom: 1.2rem;
+        }
+
+        .test-card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+            margin-bottom: 0.7rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .test-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.3rem;
+        }
+
+        .test-date {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 0.6rem;
+        }
+
+        .test-summary {
+            color: #4a5568;
+            margin-bottom: 0.7rem;
+            line-height: 1.4;
+        }
+
+        .view-button {
+            background: #667eea;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.25rem;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .view-button:hover {
+            background: #5a67d8;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .empty-icon {
+            font-size: 2.5rem;
+            color: #cbd5e0;
+            margin-bottom: 0.7rem;
+        }
+
+        .empty-text {
+            color: #718096;
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .start-test-button {
+            background: #667eea;
+            color: white;
+            padding: 0.6rem 1.8rem;
+            border-radius: 0.25rem;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .start-test-button:hover {
+            background: #5a67d8;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 640px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .test-title {
+                font-size: 1.1rem;
+            }
+
+            .empty-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="page-content">
+        <header class="header">
+            <h1>我的测试报告</h1>
+        </header>
+
+        <main class="container">
+            <!-- 测试报告列表：有测试报告时显示，不再检查授权状态 -->
+            <div class="test-list" v-if="testReports.length > 0">
+                <div v-for="(report, index) in testReports" :key="index" class="test-card" @click="viewReport(report.id)">
+                    <div class="test-title">{{ report.title }}</div>
+                    <div class="test-date">完成时间：{{ report.date }}</div>
+                    <div class="test-summary">
+                        <span>总分：{{ report.totalScore }}，均分：{{ report.averageScore.toFixed(2) }}</span>
+                        <p>{{ report.summary }}</p>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <button class="view-button">查看详情</button>
+                        <button class="delete-button" @click.stop="deleteReport(report.id, $event)" style="background: #e53e3e; color: white; padding: 0.4rem 0.8rem; border-radius: 0.25rem; font-size: 0.85rem; border: none; cursor: pointer; margin-left: 0.5rem;">
+                            删除
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 无测试记录的空状态 -->
+            <div class="empty-state" v-else>
+                <div class="empty-icon">📋</div>
+                <div class="empty-text">您还没有完成任何测试</div>
+                <a href="index.html" class="start-test-button">开始测试</a>
+            </div>
+            
+            <!-- 未授权提示（仅显示提示，不阻止查看历史记录） -->
+            <div class="empty-state" v-if="!isAuthorized && testReports.length > 0" style="margin-top: 20px; padding: 10px; background: #fffbea; border: 1px solid #fbd38d; border-radius: 0.5rem;">
+                <div class="empty-icon">⚠️</div>
+                <div class="empty-text">您的授权已过期，需要重新授权才能进行新的测试</div>
+                <a href="index.html" class="start-test-button" style="background: #ed8936;">前往首页授权</a>
+            </div>
+        </main>
+
+        <!-- 底部导航栏 -->
+        <nav class="footer-nav">
+            <a href="index.html" class="nav-item">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-text">首页</div>
+            </a>
+            <a href="" class="nav-item active">
+                <div class="nav-icon">📊</div>
+                <div class="nav-text">我的测试</div>
+            </a>
+            <a href="service.html" class="nav-item">
+                <div class="nav-icon">💬</div>
+                <div class="nav-text">客服</div>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        // 创建Vue应用
+        const app = Vue.createApp({
+            data() {
+                return {
+                    testReports: [], // 初始为空数组，实际应用中应从本地存储或服务器获取
+                    isAuthorized: false // 添加授权状态变量
+                };
+            },
+            mounted() {
+                // 检查是否已经授权
+                this.checkAuthorization();
+                
+                // 从本地存储加载测试报告数据
+                // 无论授权状态如何，都加载测试报告数据
+                this.loadTestReports();
+            },
+            methods: {
+                // 检查授权状态
+                checkAuthorization() {
+                    // 使用auth.js中的授权检查函数
+                    this.isAuthorized = window.authSystem.isAuthorized();
+                    console.log("授权状态:", this.isAuthorized);
+                },
+                
+                // 加载测试报告
+                loadTestReports() {
+                    try {
+                        // 从localStorage获取测试记录
+                        const testRecords = JSON.parse(localStorage.getItem('testRecords')) || [];
+                        this.testReports = testRecords;
+                    } catch (error) {
+                        console.error('加载测试报告失败:', error);
+                        this.testReports = [];
+                    }
+                },
+                // 查看报告详情
+                viewReport(reportId) {
+                    // 查找对应的报告数据
+                    const report = this.testReports.find(r => r.id === reportId);
+                    if (!report) return;
+                    
+                    // 构建URL参数
+                    const params = new URLSearchParams();
+                    params.append('results', JSON.stringify(report.results));
+                    params.append('totalScore', report.totalScore);
+                    params.append('positiveItems', report.positiveItems || 0);
+                    params.append('testType', report.type);
+                    params.append('answers', JSON.stringify({})); // 传递空对象，因为历史记录中可能没有保存答案
+                    params.append('from', 'history'); // 添加标记，表明是从历史记录查看
+                    
+                    // 为MBTI测试添加特定参数
+                    if (report.type === 'mbti' && report.personalityType) {
+                        params.append('personalityType', report.personalityType);
+                        
+                        // 如果存在维度数据，也添加到参数中
+                        if (report.mbtiDimensions) {
+                            params.append('mbtiDimensions', JSON.stringify(report.mbtiDimensions));
+                        }
+                    }
+                    
+                    // 跳转到报告页面
+                    window.location.href = `report.html?${params.toString()}`;
+                },
+                // 删除测试报告
+                deleteReport(reportId, event) {
+                    event.stopPropagation(); // 阻止事件冒泡，避免触发viewReport
+                    
+                    if (confirm('确定要删除这条测试记录吗？')) {
+                        try {
+                            // 从本地存储中获取测试记录
+                            let testRecords = JSON.parse(localStorage.getItem('testRecords')) || [];
+                            
+                            // 过滤掉要删除的记录
+                            testRecords = testRecords.filter(record => record.id !== reportId);
+                            
+                            // 更新本地存储
+                            localStorage.setItem('testRecords', JSON.stringify(testRecords));
+                            
+                            // 更新页面显示
+                            this.testReports = testRecords;
+                        } catch (error) {
+                            console.error('删除测试记录失败:', error);
+                            alert('删除失败，请重试');
+                        }
+                    }
+                }
+            }
+        });
+
+        // 挂载Vue应用
+        app.mount('#app');
+    </script>
+    <script src="static/js/wx-config.js"></script>
+    <script src="static/js/weixin-redirect.js"></script>
+</body>
+</html>

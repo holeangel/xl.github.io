@@ -1,0 +1,772 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://res.wx.qq.com https://res2.wx.qq.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://res.wx.qq.com https://res2.wx.qq.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.qq.com; connect-src * 'self'; form-action 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="no-referrer-when-downgrade">
+    <!-- 微信分享信息设置 -->
+    <meta property="og:title" content="心理测试问卷">
+    <meta property="og:description" content="专业心理测评工具，帮助您了解自己的心理状态">
+    <meta property="og:image" content="http://你的域名/images/logo.png">
+    <meta property="og:url" content="http://你的域名/questions.html">
+    <title>症状自评量表</title>
+    <link rel="stylesheet" href="static/css/life001.web.prod.css">
+    <link rel="stylesheet" href="static/css/footer-nav.css">
+    <script src="static/js/disable-zoom.js"></script>
+    <script src="static/js/vue.global.prod.min.js"></script>
+    <!-- 微信JS-SDK -->
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            margin: 0;
+            padding: 0;
+            background: #f7fafc;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-button {
+            color: #4a5568;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .back-button:hover {
+            background: #f7fafc;
+        }
+
+        .page-title {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            font-weight: bold;
+            color: #2d3748;
+            text-align: center;
+            flex: 1;
+            margin-right: 2.5rem;
+        }
+
+        .main-content {
+            max-width: 800px;
+            margin: 6rem auto 2rem;
+            padding: clamp(1rem, 5vw, 2rem);
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding-bottom: 6rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .question-number {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: #4a5568;
+            margin-bottom: 1rem;
+        }
+
+        .question-text {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .option-button {
+            padding: clamp(1rem, 3vw, 1.2rem);
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            background: white;
+            color: #4a5568;
+            font-size: clamp(1rem, 3vw, 1.1rem);
+            text-align: left;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 0.3rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .option-button:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+            transform: translateY(-1px);
+        }
+
+        .option-button:active {
+            transform: translateY(0);
+        }
+
+        .option-button.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+            color: #667eea;
+            font-weight: 500;
+            animation: selectOption 0.2s ease;
+        }
+
+        @keyframes selectOption {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(0.98);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .option-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(102, 126, 234, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .option-button:focus:not(:active)::after {
+            animation: ripple 0.8s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(100, 100);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .main-content {
+                margin: 5rem 1rem 5rem;
+                padding: 1rem 1rem 6rem;
+            }
+
+            .header-content {
+                padding: 0.75rem 1rem;
+            }
+
+            .question-text {
+                margin-bottom: 1.2rem;
+            }
+
+            .options {
+                gap: 0.6rem;
+            }
+
+            .option-button {
+                padding: 0.9rem 1rem;
+                margin-bottom: 0.2rem;
+            }
+
+            .result-button-container {
+                margin-bottom: 4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                margin: 4rem 0.5rem 5rem;
+                padding: 0.75rem 0.75rem 5rem;
+            }
+
+            .header-content {
+                padding: 0.5rem;
+            }
+
+            .options {
+                gap: 0.4rem;
+            }
+
+            .option-button {
+                padding: 0.7rem 0.9rem;
+                margin-bottom: 0.1rem;
+                font-size: 0.95rem;
+            }
+
+            .back-button {
+                padding: 0.25rem 0.5rem;
+            }
+
+            .result-button {
+                padding: 0.8rem 2rem;
+                font-size: 1rem;
+            }
+            
+            .question-text {
+                margin-bottom: 1rem;
+                line-height: 1.5;
+            }
+            
+            .option-indicator {
+                width: 16px;
+                height: 16px;
+                margin-right: 8px;
+            }
+        }
+
+        .result-button-container {
+            margin-top: 1.5rem;
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .result-button {
+            background: #667eea;
+            color: white;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .prev-button {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .prev-button:hover:not(:disabled) {
+            background: #cbd5e0;
+        }
+
+        .next-button {
+            background: #667eea;
+            color: white;
+        }
+
+        .next-button:hover:not(:disabled) {
+            background: #5a67d8;
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .completion-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f0fff4;
+            border-radius: 0.5rem;
+            color: #38a169;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .result-button-highlight {
+            background: #764ba2;
+            color: white;
+        }
+
+        /* 添加弹窗提示样式 */
+        .toast-message {
+            position: fixed;
+            top: 80%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(56, 161, 105, 0.8);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+        .toast-message.show {
+            opacity: 1;
+        }
+        
+        /* 添加选项切换动画 */
+        .options-transition-group {
+            position: relative;
+        }
+        
+        .option-fade-enter-active,
+        .option-fade-leave-active {
+            transition: opacity 0.3s ease;
+        }
+        
+        .option-fade-enter-from,
+        .option-fade-leave-to {
+            opacity: 0;
+        }
+        
+        /* 添加选项选中状态指示器 */
+        .option-indicator {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #e2e8f0;
+            margin-right: 10px;
+            vertical-align: middle;
+            position: relative;
+            top: -1px;
+            transition: all 0.2s ease;
+        }
+        
+        .selected .option-indicator {
+            border-color: #667eea;
+            background-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="cogni">
+        <!-- 弹窗提示 -->
+        <div class="toast-message" :class="{ 'show': showToast }">
+            恭喜您已完成所有问题！
+        </div>
+
+        <header class="header">
+            <div class="header-content">
+                <button class="back-button" @click="goBack">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <div class="page-title">{{ testTitle }}</div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="progress-bar">
+                <div class="progress-fill" :style="{ width: `${progress}%` }"></div>
+            </div>
+            <div class="question-number">问题 {{currentQuestionIndex + 1}}/{{questions.length}}</div>
+            <div class="question-content">
+                <div class="question-text">{{currentQuestion.text}}</div>
+                <div class="options">
+                    <button v-for="(option, index) in currentOptions" 
+                            :key="`${currentQuestionIndex}-${index}`"
+                            @click="selectAnswer(index)"
+                            :class="['option-button', { 'selected': selectedAnswer === index }]">
+                        <span class="option-indicator"></span>
+                        {{option}}
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 导航按钮 -->
+            <div class="navigation-buttons">
+                <button class="nav-button prev-button" 
+                        @click="goToPrevQuestion" 
+                        :disabled="currentQuestionIndex === 0">
+                    上一题
+                </button>
+                <!-- 如果是最后一题且已作答，显示"查看分析结果"按钮，否则显示"下一题"按钮 -->
+                <button v-if="currentQuestionIndex === questions.length - 1 && selectedAnswer !== null" class="nav-button next-button result-button-highlight" @click="calculateResults">
+                    查看分析结果
+                </button>
+                <button v-else class="nav-button next-button" 
+                        @click="goToNextQuestion" 
+                        :disabled="selectedAnswer === null">
+                    下一题
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- 引入所有测试数据 -->
+    <script src="static/js/scl90.js"></script>
+    <script src="static/js/sds.js"></script>
+    <script src="static/js/sas.js"></script>
+    <script src="static/js/bsq.js"></script>
+    <script src="static/js/mbti.js"></script>
+    <script src="static/js/mbti-processor.js"></script>
+    <script src="static/js/auth.js"></script>
+    <script src="static/js/disable-zoom.js"></script>
+    <script src="static/js/wx-config.js"></script>
+    <script src="static/js/weixin-redirect.js"></script>
+    <script>
+        const { createApp } = Vue;
+        const app = createApp({
+            data() {
+                return {
+                    currentQuestionIndex: 0,
+                    selectedAnswer: null,
+                    answers: {},
+                    testType: '',
+                    testData: null,
+                    testTitle: '心理测试问题',
+                    showToast: false  // 控制弹窗显示
+                }
+            },
+            mounted() {
+                // 检查用户是否已授权
+                if (!window.authSystem.isAuthorized()) {
+                    // 未授权，重定向到首页
+                    window.location.href = 'index.html';
+                    return;
+                }
+                
+                // 优先从URL参数获取type
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlTestType = urlParams.get('type');
+                if (urlTestType) {
+                    sessionStorage.setItem('currentTestType', urlTestType);
+                    this.testType = urlTestType;
+                } else {
+                    this.testType = sessionStorage.getItem('currentTestType') || 'scl90';
+                }
+                
+                // 检查授权是否已过期
+                // const expireDate = localStorage.getItem('auth_expire_date');
+                // if (expireDate) {
+                //     const now = new Date();
+                //     const expire = new Date(expireDate);
+                    
+                //     if (now > expire) {
+                //         // 授权已过期，清除授权信息并重定向到首页
+                //         localStorage.removeItem('auth_verified');
+                //         localStorage.removeItem('auth_test_types');
+                //         localStorage.removeItem('auth_expire_date');
+                //         localStorage.removeItem('authCode');
+                        
+                //         alert('您的授权已过期，请重新获取授权码');
+                //         window.location.href = 'index.html';
+                //         return;
+                //     }
+                // }
+                
+                // 检查是否有权限访问当前测试类型
+                // try {
+                //     const authorizedTypes = JSON.parse(localStorage.getItem('auth_test_types') || '[]');
+                //     if (!authorizedTypes.includes(this.testType)) {
+                //         // 没有权限访问该测试类型，返回首页
+                //         alert('您没有权限访问此测试类型，请使用正确的授权码');
+                //         window.location.href = 'index.html';
+                //         return;
+                //     }
+                // } catch (e) {
+                //     // JSON解析出错或其他错误，授权信息可能被损坏
+                //     localStorage.removeItem('auth_verified');
+                //     localStorage.removeItem('auth_test_types');
+                //     localStorage.removeItem('auth_expire_date');
+                //     localStorage.removeItem('authCode');
+                    
+                //     alert('授权信息有误，请重新获取授权码');
+                //     window.location.href = 'index.html';
+                //     return;
+                // }
+                
+                // 根据测试类型加载相应的数据
+                this.loadTestData();
+            },
+            computed: {
+                currentQuestion() {
+                    return this.questions[this.currentQuestionIndex];
+                },
+                questions() {
+                    return this.testData ? this.testData.questions : [];
+                },
+                progress() {
+                    return ((this.currentQuestionIndex + 1) / this.questions.length) * 100;
+                },
+                // 判断是否所有问题都已回答
+                isAllQuestionsAnswered() {
+                    return Object.keys(this.answers).length === this.questions.length;
+                },
+                // 获取当前问题的选项
+                currentOptions() {
+                    if (this.currentQuestion && this.currentQuestion.options) {
+                        return this.currentQuestion.options;
+                    }
+                    
+                    // 根据测试类型返回默认选项
+                    if (this.testType === 'scl90' || this.testType === 'bsq') {
+                        return ['没有', '轻微', '中等', '偏重', '严重'];
+                    } else if (this.testType === 'sds' || this.testType === 'sas') {
+                        return ['没有或很少时间', '小部分时间', '相当多时间', '绝大部分或全部时间'];
+                    }
+                    
+                    return ['没有', '轻微', '中等', '偏重', '严重'];
+                }
+            },
+            watch: {
+                // 监听问题索引变化，更新选中状态
+                currentQuestionIndex(newIndex) {
+                    // 设置当前问题的已选答案（如果已回答）
+                    const currentQuestionAnswer = this.answers[this.currentQuestion.id - 1];
+                    this.selectedAnswer = currentQuestionAnswer ? currentQuestionAnswer - 1 : null;
+                }
+            },
+            methods: {
+                // 加载测试数据
+                loadTestData() {
+                    switch(this.testType) {
+                        case 'scl90':
+                            this.testData = scl90Data;
+                            this.testTitle = 'SCL-90 症状自评量表';
+                            break;
+                        case 'sds':
+                            this.testData = sdsData;
+                            this.testTitle = 'SDS 抑郁自评量表';
+                            break;
+                        case 'sas':
+                            this.testData = sasData;
+                            this.testTitle = 'SAS 焦虑自评量表';
+                            break;
+                        case 'bsq':
+                            this.testData = bsqData;
+                            this.testTitle = 'BSQ 双相情感障碍自评量表';
+                            break;
+                        case 'mbti':
+                            this.testData = mbtiData;
+                            this.testTitle = 'MBTI 16种人格测试';
+                            break;
+                        default:
+                            this.testData = scl90Data;
+                            this.testTitle = 'SCL-90 症状自评量表';
+                    }
+                },
+                goBack() {
+                    if (confirm('确定要返回吗？您的答案将被清空。')) {
+                        window.location.href = 'index.html';
+                    }
+                },
+                selectAnswer(index) {
+                    this.selectedAnswer = index;
+                    this.answers[this.currentQuestion.id - 1] = index + 1;
+                    
+                    // 检查是否是最后一题并且所有问题都回答完毕
+                    if (this.currentQuestionIndex === this.questions.length - 1 && this.isAllQuestionsAnswered) {
+                        this.showToast = true;
+                        // 800毫秒后自动隐藏
+                        setTimeout(() => {
+                            this.showToast = false;
+                        }, 800);
+                    } else {
+                        // 直接进入下一题，无延迟，允许快速作答
+                        if (this.currentQuestionIndex < this.questions.length - 1) {
+                            // 添加短暂延迟以展示选择效果
+                            setTimeout(() => {
+                                this.goToNextQuestion();
+                            }, 300);
+                        }
+                    }
+                },
+                // 前往上一题
+                goToPrevQuestion() {
+                    if (this.currentQuestionIndex > 0) {
+                        this.currentQuestionIndex--;
+                    }
+                },
+                // 前往下一题
+                goToNextQuestion() {
+                    if (this.currentQuestionIndex < this.questions.length - 1 && this.selectedAnswer !== null) {
+                        this.currentQuestionIndex++;
+                        
+                        // 如果到达最后一题并且所有问题都回答完毕，显示弹窗提示
+                        if (this.currentQuestionIndex === this.questions.length - 1 && this.isAllQuestionsAnswered) {
+                            this.showToast = true;
+                            // 800毫秒后自动隐藏
+                            setTimeout(() => {
+                                this.showToast = false;
+                            }, 800);
+                        }
+                    }
+                },
+                async calculateResults() {
+                    try {
+                        if (this.testType === 'mbti') {
+                            // 使用MBTI处理器计算结果
+                            const mbtiResults = mbtiProcessor.calculateResults(this.answers, this.testData.questions);
+                            
+                            // 输出调试信息
+                            console.log('MBTI测试计算结果:', {
+                                personalityType: mbtiResults.personalityType,
+                                dimensions: mbtiResults.dimensions
+                            });
+                            
+                            // 构建URL参数
+                            const params = new URLSearchParams();
+                            params.append('personalityType', mbtiResults.personalityType);
+                            params.append('mbtiDimensions', JSON.stringify(mbtiResults.dimensions));
+                            params.append('mbtiPercentages', JSON.stringify(mbtiResults.percentages));
+                            params.append('answers', JSON.stringify(this.answers));
+                            params.append('testType', this.testType);
+                            
+                            // 确保数据已准备好后再跳转
+                            await new Promise(resolve => setTimeout(resolve, 100));
+                            
+                            // 使用 replace 而不是 href 来避免浏览器历史记录问题
+                            window.location.replace(`report.html?${params.toString()}`);
+                            return;
+                        }
+                        // 非MBTI测试的标准处理流程
+                        // 计算各维度得分
+                        const scores = {};
+                        this.testData.dimensions.forEach(dimension => {
+                            const dimensionQuestions = this.testData.questions.filter(q => q.dimension === dimension);
+                            let total = 0;
+                            let count = 0;
+                            dimensionQuestions.forEach(q => {
+                                if (q.reverse) {
+                                    const maxScore = this.currentOptions.length + 1;
+                                    total += maxScore - this.answers[q.id - 1];
+                                } else {
+                                    total += this.answers[q.id - 1] || 0;
+                                }
+                                count++;
+                            });
+                            scores[dimension] = count > 0 ? total / count : 0;
+                        });
+                        // 计算总分和阳性项目数
+                        const totalScore = Object.values(this.answers).reduce((sum, answer) => sum + answer, 0);
+                        const positiveItems = Object.values(this.answers).filter(answer => answer >= 2).length;
+                        // ========== BSQ专用分数存储 =============
+                        if (this.testType === 'bsq') {
+                            // 获取躁狂和抑郁维度均分
+                            const manicScore = scores['躁狂症状'] || 0;
+                            const depressiveScore = scores['抑郁症状'] || 0;
+                            // 存入localStorage，便于report.html读取
+                            localStorage.setItem('bsq_manicScore', manicScore);
+                            localStorage.setItem('bsq_depressiveScore', depressiveScore);
+                            // 构建URL参数，带上分数
+                            const params = new URLSearchParams();
+                            params.append('manicScore', manicScore);
+                            params.append('depressiveScore', depressiveScore);
+                            params.append('answers', JSON.stringify(this.answers));
+                            params.append('testType', this.testType);
+                            await new Promise(resolve => setTimeout(resolve, 100));
+                            window.location.replace(`report.html?${params.toString()}`);
+                            return;
+                        }
+                        // ========== 其他量表原有逻辑 =============
+                        const params = new URLSearchParams();
+                        params.append('results', JSON.stringify(scores));
+                        params.append('totalScore', totalScore);
+                        params.append('positiveItems', positiveItems);
+                        params.append('answers', JSON.stringify(this.answers));
+                        params.append('testType', this.testType);
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        window.location.replace(`report.html?${params.toString()}`);
+                    } catch (error) {
+                        console.error('计算结果时出错:', error);
+                        alert('生成报告时出现错误，请重试');
+                    }
+                }
+            }
+        });
+        app.mount('#app');
+    </script>
+
+    <!-- 底部导航栏 -->
+    <nav class="footer-nav">
+        <a href="index.html" class="nav-item">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-text">首页</div>
+        </a>
+        <a href="mytests.html" class="nav-item">
+            <div class="nav-icon">📊</div>
+            <div class="nav-text">我的测试</div>
+        </a>
+        <a href="service.html" class="nav-item">
+            <div class="nav-icon">💬</div>
+            <div class="nav-text">客服</div>
+        </a>
+    </nav>
+</body>
+</html>

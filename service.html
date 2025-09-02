@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src * 'self'; form-action 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Referrer-Policy" content="no-referrer-when-downgrade">
+    <title>客服服务 - 心理测试</title>
+    <link rel="stylesheet" href="static/css/life001.web.prod.css">
+    <link rel="stylesheet" href="static/css/footer-nav.css">
+    <script src="static/js/vue.global.prod.min.js"></script>
+    <style>
+        /* 基础样式 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            margin: 0;
+            padding: 0;
+            background: #f7fafc;
+        }
+
+        /* 头部样式 */
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 1.8rem;
+        }
+
+        /* 内容区域 */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* 客服卡片 */
+        .service-card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-description {
+            color: #4a5568;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* 二维码容器 */
+        .qrcode-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .qrcode-image {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 1rem;
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .qrcode-caption {
+            font-size: 1rem;
+            color: #718096;
+        }
+
+        /* 联系信息 */
+        .contact-info {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .contact-item {
+            margin-bottom: 1rem;
+        }
+
+        .contact-label {
+            font-weight: 600;
+            color: #4a5568;
+            margin-right: 0.5rem;
+        }
+
+        .contact-value {
+            color: #718096;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 640px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .service-title {
+                font-size: 1.3rem;
+            }
+
+            .qrcode-image {
+                width: 180px;
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="page-content">
+        <header class="header">
+            <h1>客服服务</h1>
+        </header>
+
+        <main class="container">
+            <div class="service-card">
+                <h2 class="service-title">联系我们</h2>
+                <p class="service-description">如果您在使用过程中遇到任何问题，或者有任何建议和反馈，欢迎通过以下方式联系我们的客服团队。我们将竭诚为您提供帮助。</p>
+                
+                <div class="qrcode-container" v-if="qrcodeInfo">
+                    <img :src="qrcodeInfo.file_url" alt="微信二维码" class="qrcode-image">
+                    <p class="qrcode-caption">{{ qrcodeInfo.description || '扫描上方二维码添加客服微信' }}</p>
+                </div>
+                <div class="qrcode-container" v-else>
+                    <img src="static/picture/qrcode_inset.webp" alt="微信二维码" class="qrcode-image">
+                    <p class="qrcode-caption">扫描上方二维码添加客服微信</p>
+                </div>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <span class="contact-label">工作时间：</span>
+                        <span class="contact-value">周一至周五 9:00-23:00</span>
+                    </div>
+                  
+                </div>
+            </div>
+        </main>
+
+        <!-- 底部导航栏 -->
+        <nav class="footer-nav">
+            <a href="index.html" class="nav-item">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-text">首页</div>
+            </a>
+            <a href="mytests.html" class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-text">我的测试</div>
+            </a>
+            <a href="" class="nav-item active">
+                <div class="nav-icon">💬</div>
+                <div class="nav-text">客服</div>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        // 创建Vue应用
+        const app = Vue.createApp({
+            data() {
+                return {
+                    qrcodeInfo: null
+                };
+            },
+            methods: {
+                // 获取二维码信息
+                async getQrcodeInfo() {
+                    try {
+                        const response = await fetch('api/qrcode.php?action=get');
+                        const data = await response.json();
+                        if (data.success && data.data) {
+                            this.qrcodeInfo = data.data;
+                            console.log('获取到二维码信息:', this.qrcodeInfo);
+                        }
+                    } catch (error) {
+                        console.error('获取微信二维码信息失败:', error);
+                    }
+                }
+            },
+            mounted() {
+                // 页面加载时获取二维码信息
+                this.getQrcodeInfo();
+            }
+        });
+
+        // 挂载Vue应用
+        app.mount('#app');
+    </script>
+</body>
+</html>

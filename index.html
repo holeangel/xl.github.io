@@ -1,0 +1,828 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://res.wx.qq.com https://res2.wx.qq.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://res.wx.qq.com https://res2.wx.qq.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.qq.com; connect-src * 'self'; form-action 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="no-referrer-when-downgrade">
+    <!-- 微信分享信息设置 -->
+    <meta property="og:title" content="心理测试">
+    <meta property="og:description" content="专业心理测评工具，帮助您了解自己的心理状态">
+    <meta property="og:image" content="https://github.com/holeangel/xl.github.io/images/logo.png">
+    <meta property="og:url" content="https://github.com/holeangel/xl.github.io/">
+    <title>症状自评量表</title>
+    <link rel="stylesheet" href="static/css/life001.web.prod.css">
+    <link rel="stylesheet" href="static/css/footer-nav.css">
+
+
+    <script src="static/js/vue.global.prod.min.js"></script>
+    <script src="static/js/disable-zoom.js"></script>
+    <!-- 微信JS-SDK -->
+    <script src="static/js/jweixin-1.6.0.js"></script>
+    <style>
+        /* 全局字体设置 */
+        :root {
+            --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+            --font-size-base: 16px;
+            --line-height-base: 1.7;
+            --heading-line-height: 1.4;
+            --heading-font-weight: 600;
+            --text-color-primary: #2c3e50;
+            --text-color-secondary: #505a68;
+            --text-color-light: #6c7a89;
+        }
+        
+        /* 全局样式优化 */
+        html, body {
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-base);
+            color: var(--text-color-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-family-base);
+            line-height: var(--heading-line-height);
+            font-weight: var(--heading-font-weight);
+            color: var(--text-color-primary);
+        }
+        
+        p {
+            margin-bottom: 1.2em;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+        }
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 1rem;
+        }
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+        .hero-description {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+        .start-button {
+            background: white;
+            color: #764ba2;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .content-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0.8rem;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .section-title {
+            font-size: 2rem;
+            color: var(--text-color-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        .reference-item {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f7fafc;
+            border-radius: 0.5rem;
+            border-left: 4px solid #667eea;
+        }
+        .reference-title {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+        .reference-text {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        .footer {
+            background: #f7fafc;
+            padding: 0.5rem 0;
+            margin-top: 4rem;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .footer-link {
+            color: #4a5568;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-link:hover {
+            color: #667eea;
+        }
+        .footer-info {
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        body {
+            font-family: var(--font-family-base);
+            line-height: var(--line-height-base);
+            color: var(--text-color-primary);
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* 测试类型卡片样式 */
+        .test-type-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .test-type-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        /* 不同测试类型的边框颜色 */
+        .test-type-card.scl90 {
+            border-top: 4px solid #1890ff;
+        }
+        
+        .test-type-card.sds {
+            border-top: 4px solid #eb2f96;
+        }
+        
+        .test-type-card.sas {
+            border-top: 4px solid #52c41a;
+        }
+        
+        .test-type-card.bsq {
+            border-top: 4px solid #faad14;
+        }
+        
+            /* 授权码验证模态框样式 */
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .auth-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .auth-modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+        .auth-modal.show .auth-modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .auth-modal-content h2 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .auth-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 0.5rem;
+            transition: border-color 0.3s ease;
+        }
+        .auth-input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        .auth-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+        }
+        .cancel-button, .confirm-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        .cancel-button {
+            background-color: #e2e8f0;
+            color: #4a5568;
+        }
+        .cancel-button:hover {
+            background-color: #cbd5e0;
+        }
+        .confirm-button {
+            background-color: #667eea;
+            color: white;
+        }
+        .confirm-button:hover {
+            background-color: #5a67d8;
+        }
+        .error-message {
+            color: #e53e3e;
+            margin-top: -1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        /* 测试类型卡片内容样式优化 */
+        .test-type-card h3 {
+            color: var(--text-color-primary);
+            font-size: 1.4rem;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        
+        .test-type-card p {
+            color: var(--text-color-secondary);
+            margin-bottom: 1.25rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            min-height: 2.9rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="app" class="cogni page-content">
+        <!-- 授权码验证模态框 -->
+        <div class="auth-modal" :class="{ 'show': showAuthModal }">
+            <div class="auth-modal-content">
+                <h2>请输入授权码</h2>
+                <p>请输入5位数字授权码以继续测试</p>
+                <input type="text" v-model="authCode" maxlength="5" placeholder="请输入5位数字授权码" pattern="[0-9]{5}" inputmode="numeric" class="auth-input" ref="authInput" @keyup.enter="verifyAuthCode">
+                <p class="error-message" v-if="authError">{{ authErrorMessage }}</p>
+                <div class="auth-buttons">
+                    <button class="cancel-button" @click="cancelAuth">取消</button>
+                    <button class="confirm-button" @click="verifyAuthCode">确认</button>
+                </div>
+            </div>
+        </div>
+        <!--
+        <div class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">心理健康自评量表</h1>
+                <p class="hero-description">提供多种专业心理健康测试量表，帮助您全面了解自己的心理健康状况</p>
+            </div>
+        </div>
+        -->
+        <div class="content-section">
+            <h2 class="section-title" style="text-align: center;">选择测试类型</h2>
+            <div class="test-types-container" style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem;">
+                <!-- SCL-90 症状自评量表 -->
+                <div class="test-type-card scl90" style="background: linear-gradient(135deg, #f0f7ff 0%, #e6f7ff 100%); border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); padding: 1.5rem; transition: all 0.3s ease; border: 1px solid #f0f0f0; position: relative; overflow: hidden; cursor: pointer;" @click="startTest('scl90')">
+                    <div style="position: absolute; top: 0; right: 0; width: 70px; height: 70px; background: linear-gradient(135deg, #e6f7ff 0%, #1890ff 100%); opacity: 0.2; border-radius: 0 0 0 70px;"></div>
+                    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #e6f7ff; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
+                            <span style="font-size: 1.5rem; color: #1890ff;">📊</span>
+                        </div>
+                        <h3 style="color: #2d3748; font-size: 1.5rem; margin: 0; font-weight: 600;">SCL-90 心理健康自评量表</h3>
+                    </div>
+                    <p style="color: #4a5568; margin-bottom: 0.7rem; font-size: 0.95rem; line-height: 1.5;">从十个维度全面评估心理健康状况，包括躯体化、抑郁、焦虑等</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; border-top: 1px dashed #e2e8f0; padding-top: 0.5rem;">
+                        <span style="color: #718096; font-size: 0.85rem; display: flex; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                            90题
+                        </span>
+                        <span style="color: #718096; font-size: 0.85rem; display: flex; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            约15分钟
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- SDS 抑郁自评量表 
+                <div class="test-type-card sds" style="background: linear-gradient(135deg, #fff7f9 0%, #fff0f6 100%); border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); padding: 1.5rem; transition: all 0.3s ease; border: 1px solid #f0f0f0; position: relative; overflow: hidden; cursor: pointer;" @click="startTest('sds')">
+                    <div style="position: absolute; top: 0; right: 0; width: 70px; height: 70px; background: linear-gradient(135deg, #fff0f6 0%, #eb2f96 100%); opacity: 0.2; border-radius: 0 0 0 70px;"></div>
+                    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #fff0f6; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
+                            <span style="font-size: 1.5rem; color: #eb2f96;">💭</span>
+                        </div>
+                        <h3 style="color: #2d3748; font-size: 1.5rem; margin: 0; font-weight: 600;">SDS 抑郁自评量表</h3>
+                    </div>
+                    <p style="color: #4a5568; margin-bottom: 0.7rem; font-size: 0.95rem; line-height: 1.5;">评估抑郁症状的严重程度，包括情感、躯体和心理症状</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; border-top: 1px dashed #e2e8f0; padding-top: 0.5rem;">
+                        <span style="color: #718096; font-size: 0.85rem; display: flex; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                            20题
+                        </span>
+                        <span style="color: #718096; font-size: 0.85rem; display: flex; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            约5分钟
+                        </span>
+                    </div>
+                </div>-->
+                
+                <!-- SAS 焦虑自评量表 
+                <div class="test-type-card sas" style="background: linear-gradient(135deg, #f9fff0 0%, #f6ffed 100%); border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); padding: 1.5rem; transition: all 0.3s ease; border: 1px solid #f0f0f0; position: relative; overflow: hidden; cursor: pointer;" @click="startTest('sas')">
+                    <div style="position: absolute; top: 0; right: 0; width: 70px; height: 70px; background: linear-gradient(135deg, #f6ffed 0%, #52c41a 100%); opacity: 0.2; border-radius: 0 0 0 70px;"></div>
+                    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #f6ffed; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
+                            <span style="font-size: 1.5rem; color: #52c41a;">🧠</span>
+                        </div>
+                        <h3 style="color: #2d3748; font-size: 1.5rem; margin: 0; font-weight: 600;">SAS 焦虑自评量表</h3>
+                    </div>
+                    <p style="color: #4a5568; margin-bottom: 0.7rem; font-size: 0.95rem; line-height: 1.5;">评估焦虑症状的严重程度，包括主观感受和躯体症状</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; border-top: 1px dashed #e2e8f0; padding-top: 0.5rem;">
+                        <span style="color: #718096; font-size: 0.85rem; display: flex; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                            20题
+                        </span>
+                        <span style="color: #718096; font-size: 0.85rem; display: flex; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            约5分钟
+                        </span>
+                    </div>
+                </div>-->
+                
+                <!-- BSQ 双相情感障碍自评量表 -->
+                <div class="test-type-card bsq" style="background: linear-gradient(135deg, #fffef0 0%, #fffbe6 100%); border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); padding: 1.5rem; transition: all 0.3s ease; border: 1px solid #f0f0f0; position: relative; overflow: hidden; cursor: pointer;" @click="startTest('bsq')">
+                    <div style="position: absolute; top: 0; right: 0; width: 70px; height: 70px; background: linear-gradient(135deg, #fffbe6 0%, #faad14 100%); opacity: 0.2; border-radius: 0 0 0 70px;"></div>
+                    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #fffbe6; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
+                            <span style="font-size: 1.5rem; color: #faad14;">⚖️</span>
+                        </div>
+                        <h3 style="color: #2d3748; font-size: 1.5rem; margin: 0; font-weight: 600;">BSQ 双相情感障碍自评量表</h3>
+                    </div>
+                    <p style="color: #4a5568; margin-bottom: 0.7rem; font-size: 0.95rem; line-height: 1.5;">评估躁狂和抑郁症状，筛查可能的双相情感障碍</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; border-top: 1px dashed #e2e8f0; padding-top: 0.5rem;">
+                        <span style="color: #718096; font-size: 0.85rem; display: flex; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                            32题
+                        </span>
+                        <span style="color: #718096; font-size: 0.85rem; display: flex; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            约8分钟
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- MBTI 16种人格测试 -->
+                <div class="test-type-card mbti" style="background: linear-gradient(135deg, #e6fffb 0%, #b5f5ec 100%); border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); padding: 1.5rem; transition: all 0.3s ease; border: 1px solid #f0f0f0; position: relative; overflow: hidden; cursor: pointer; border-top: 4px solid #13c2c2;" @click="startTest('mbti')">
+                    <div style="position: absolute; top: 0; right: 0; width: 70px; height: 70px; background: linear-gradient(135deg, #b5f5ec 0%, #13c2c2 100%); opacity: 0.2; border-radius: 0 0 0 70px;"></div>
+                    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #b5f5ec; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
+                            <span style="font-size: 1.5rem; color: #13c2c2;">🧩</span>
+                        </div>
+                        <h3 style="color: #2d3748; font-size: 1.5rem; margin: 0; font-weight: 600;">MBTI 16种人格测试</h3>
+                    </div>
+                    <p style="color: #4a5568; margin-bottom: 0.7rem; font-size: 0.95rem; line-height: 1.5;">识别您的性格类型，了解自己的优势、弱点和潜在职业倾向</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; border-top: 1px dashed #e2e8f0; padding-top: 0.5rem;">
+                        <span style="color: #718096; font-size: 0.85rem; display: flex; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                            93题
+                        </span>
+                        <span style="color: #718096; font-size: 0.85rem; display: flex; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            约15分钟
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">测试说明</h2>
+            <div class="content-text">
+                <p>我们提供多种专业心理健康测试量表，每种测试都有不同的问题数量和评估维度。请根据您的实际情况如实回答。</p>
+                <p>测试结果仅供参考，不作为诊断依据。如有需要，请及时就医。</p>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#">性格类型</a>
+                    <a href="#">性格优势</a>
+                    <a href="#">职业兴趣</a>
+                    <a href="#">关于我们</a>
+                </div>
+                <div class="footer-info">
+                    <p>© 2024 心理测试. All rights reserved.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-color-light);">备案号：<a href="https://beian.miit.gov.cn/" target="_blank" style="color: var(--text-color-light); text-decoration: none;">湘ICP备2025112558号</a></p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="static/js/scl90.js"></script>
+    <script src="static/js/sds.js"></script>
+    <script src="static/js/sas.js"></script>
+    <script src="static/js/bsq.js"></script>
+    <script src="static/js/mbti.js"></script>
+    <script src="static/js/auth.js"></script>
+    <script src="static/js/wx-config.js"></script>
+    <script src="static/js/weixin-redirect.js"></script>
+    <script>
+        const { createApp, ref, watch, nextTick } = Vue;
+        
+        createApp({
+            setup() {
+                const showAuthModal = ref(false);
+                const authCode = ref('');//授权码初始化
+                const authError = ref(false);
+                const authErrorMessage = ref('');
+                const authInput = ref(null);
+                
+                // 页面加载时检查授权状态
+                const checkAuthStatus = () => {
+                    // 检查是否有授权信息
+                    const isAuthorized = localStorage.getItem('auth_verified') === 'true';
+                    if (!isAuthorized) {
+                        return; // 未授权，不需要进一步检查
+                    }
+                    
+                    // 检查授权是否过期
+                    const expireDate = localStorage.getItem('auth_expire_date');
+                    if (expireDate) {
+                        const now = new Date();
+                        const expire = new Date(expireDate);
+                        
+                        if (now > expire) {
+                            // 授权已过期，清除授权信息
+                            console.log('授权已过期，清除授权信息');
+                            localStorage.removeItem('auth_verified');
+                            localStorage.removeItem('auth_test_types');
+                            localStorage.removeItem('auth_expire_date');
+                            localStorage.removeItem('authCode');
+                            return;
+                        }
+                    }
+                    
+                    // 确保auth_test_types是有效的JSON
+                    try {
+                        JSON.parse(localStorage.getItem('auth_test_types') || '[]');
+                    } catch (e) {
+                        // JSON解析出错，授权信息可能被损坏，清除授权
+                        console.log('授权信息损坏，清除授权');
+                        localStorage.removeItem('auth_verified');
+                        localStorage.removeItem('auth_test_types');
+                        localStorage.removeItem('auth_expire_date');
+                        localStorage.removeItem('authCode');
+                    }
+                };
+                
+                // 页面加载时检查授权状态
+                checkAuthStatus();
+                
+                // 监听showAuthModal变化，当显示时自动聚焦到输入框
+                watch(showAuthModal, (newVal) => {
+                    if (newVal) {
+                        // 使用延迟确保DOM已完全渲染
+                        setTimeout(() => {
+                            // 两种方式都尝试，保证兼容性
+                            if (authInput.value) {
+                                authInput.value.focus();
+                            } else {
+                                const inputElement = document.querySelector('.auth-input');
+                                if (inputElement) {
+                                    inputElement.focus();
+                                }
+                            }
+                        }, 300);
+                    }
+                });
+                
+                const verifyAuthCode = async () => {
+                    if (!authCode.value || authCode.value.length !== 5 || !/^\d{5}$/.test(authCode.value)) {
+                        authError.value = true;
+                        authErrorMessage.value = '请输入5位数字授权码';
+                        return;
+                    }
+                    
+                    try {
+                        // 清除之前的错误
+                        authError.value = false;
+                        authErrorMessage.value = '';
+                        
+                        // 获取当前选择的测试类型
+                        const testType = sessionStorage.getItem('currentTestType') || '';
+                        
+                        // 创建表单数据
+                        const formData = new FormData();
+                        formData.append('code', authCode.value.trim());
+                        formData.append('test_type', testType);
+                        
+                        console.log('发送验证请求:', {
+                            code: authCode.value,
+                            test_type: testType,
+                           // url: 'api/auth_code.php?action=verify'
+                        });
+
+                        // if (authCode.value === '12345') {
+                        //     localStorage.setItem('auth_verified', 'true');
+                        //     localStorage.setItem('auth_expire_date', '2025-07-30');
+                        //     localStorage.setItem('auth_test_types', JSON.stringify(['scl90', 'sds', 'sas', 'bsq', 'mbti']));
+                        //     localStorage.setItem('authCode', authCode.value);
+                        //     showAuthModal.value = false;
+                        //     window.location.href = 'questions.html?type=' + testType;
+                        //     return;
+                        // }
+
+
+                        // 发送请求验证授权码
+                        //  const response = await fetch('api/auth_code.php?action=verify', {
+                        //     method: 'POST',
+                        //     body: formData
+                        // });
+                        
+                        // console.log('服务器响应状态:', response.status);
+                        // const responseText = await response.text();
+                        // console.log('服务器原始响应:', responseText);
+                        
+                        let data;
+                        try {
+                            // data = JSON.parse(responseText);
+                        } catch (e) {
+                            console.error('JSON解析错误:', e);
+                            throw new Error('服务器响应格式错误');
+                        }
+                        // if (data.success) {
+                        if (authCode.value === '12345') {
+                            
+                            // 验证成功，存储授权信息
+                            localStorage.setItem('authCode', authCode.value);
+                            localStorage.setItem('auth_verified', 'true');
+          
+                            // 判断授权码类型
+                            let gotoType = testType; // testType 是用户当前选择的类型
+                            
+                            // 存储授权码过期时间
+                            // if (data.data && data.data.expire_date) {
+                            //     localStorage.setItem('auth_expire_date', data.data.expire_date);
+                            // }
+                            // 存储授权码过期时间,只能用24小时候，授权码就过期了
+                            
+                            if ('true' && 'true') {
+                                localStorage.setItem('auth_expire_date', '2025-08-04');
+                                
+                            }
+                            
+                            // 存储授权码允许的测试类型
+                            // if (data.data && data.data.test_type) {
+                            //     if (data.data.test_type === 'general') {
+                            //         // 如果是通用授权码，记录所有测试类型都被授权
+                            //         localStorage.setItem('auth_test_types', JSON.stringify(['scl90', 'sds', 'sas', 'bsq', 'mbti']));
+                            //     } else {
+                            //         // 如果是特定测试类型的授权码，只记录该类型
+                            //         localStorage.setItem('auth_test_types', JSON.stringify([data.data.test_type]));
+                            //         // 如果授权码是专用的，强制用授权码类型
+                            //         gotoType = data.data.test_type;
+                            //         sessionStorage.setItem('currentTestType', gotoType);
+                            //     }
+                            // } else {
+                            //     // 默认只记录当前选择的测试类型
+                            //     localStorage.setItem('auth_test_types', JSON.stringify([gotoType]));
+                            // }
+                            
+                            // 先关闭模态框（让动画有时间执行），然后再跳转
+                            authError.value = false;
+                            authErrorMessage.value = '';
+                            
+                            // 为用户提供视觉反馈，显示"验证成功"信息
+                            const confirmButton = document.querySelector('.confirm-button');
+                            if (confirmButton) {
+                                confirmButton.textContent = '验证成功';
+                                confirmButton.style.backgroundColor = '#52c41a';
+                            }
+                            
+                            // 延迟关闭和跳转，给用户一个良好的视觉体验
+                            setTimeout(() => {
+                                showAuthModal.value = false;
+                                
+                                // 再次延迟跳转，让模态框关闭动画完成
+                                setTimeout(() => {
+                                    alert("1");
+                                    window.location.href = 'questions.html?type=' + gotoType;
+                                }, 300);
+                            }, 500);
+                        } else {
+                            authError.value = true;
+                            // 判断是否是测试类型不匹配的错误
+                            if (data.message === '请选择授权码对应的测试类型') {
+                                authErrorMessage.value = data.message;
+                            } else {
+                                authErrorMessage.value = data.message || '验证失败，请检查授权码是否正确';
+                            }
+                        }
+                    } catch (error) {
+                        console.error('验证授权码失败:', error);
+                        authError.value = true;
+                        authErrorMessage.value = '系统错误，请稍后重试';
+                    }
+                };
+                
+                const cancelAuth = () => {
+                    // 先清除错误状态和授权码
+                    authError.value = false;
+                    authErrorMessage.value = '';
+                    
+                    // 使用延迟关闭模态框，让动画有时间执行
+                    setTimeout(() => {
+                        showAuthModal.value = false;
+                        // 在动画结束后再清空授权码
+                        setTimeout(() => {
+                            authCode.value = '';
+                        }, 300);
+                    }, 50);
+                };
+                
+                const startTest = (testType) => {
+                    // 记录当前选择的测试类型
+                    sessionStorage.setItem('currentTestType', testType);
+                    
+                    // 检查用户是否已经授权
+                    const isUserAuthorized = localStorage.getItem('auth_verified') === 'true';
+                    
+                    if (isUserAuthorized) {
+                        // 检查授权是否过期
+                        const expireDate = localStorage.getItem('auth_expire_date');
+                        if (expireDate) {
+                            const now = new Date();
+                            const expire = new Date(expireDate);
+                            
+                            if (now > expire) {
+                                // 授权已过期，清除授权信息并要求重新授权
+                                localStorage.removeItem('auth_verified');
+                                localStorage.removeItem('auth_test_types');
+                                localStorage.removeItem('auth_expire_date');
+                                
+                                authError.value = true;
+                                authErrorMessage.value = '授权已过期，请重新输入授权码';
+                                showAuthModal.value = true;
+                                
+                                setTimeout(() => {
+                                    if (authInput.value) {
+                                        authInput.value.focus();
+                                    } else {
+                                        const inputElement = document.querySelector('.auth-input');
+                                        if (inputElement) {
+                                            inputElement.focus();
+                                        }
+                                    }
+                                }, 300);
+                                
+                                return;
+                            }
+                        }
+                        
+                        // 检查用户是否有权访问当前测试类型
+                        try {
+                            const authorizedTypes = JSON.parse(localStorage.getItem('auth_test_types') || '[]');
+                            if (authorizedTypes.includes(testType)) {
+                                // 有权访问，直接跳转到测试页面
+                                window.location.href = 'questions.html?type=' + testType;
+                            } else {
+                                // 没有权限访问该测试类型，需要重新授权
+                                authError.value = true;
+                                authErrorMessage.value = '您的授权码不支持此测试类型，请使用有效的授权码';
+                                showAuthModal.value = true;
+                                
+                                setTimeout(() => {
+                                    if (authInput.value) {
+                                        authInput.value.focus();
+                                    } else {
+                                        const inputElement = document.querySelector('.auth-input');
+                                        if (inputElement) {
+                                            inputElement.focus();
+                                        }
+                                    }
+                                }, 300);
+                            }
+                        } catch (e) {
+                            // JSON解析出错，授权信息可能被损坏，清除并重新授权
+                            localStorage.removeItem('auth_verified');
+                            localStorage.removeItem('auth_test_types');
+                            localStorage.removeItem('auth_expire_date');
+                            
+                            // 未授权，显示授权码弹窗
+                            showAuthModal.value = true;
+                            
+                            setTimeout(() => {
+                                if (authInput.value) {
+                                    authInput.value.focus();
+                                } else {
+                                    const inputElement = document.querySelector('.auth-input');
+                                    if (inputElement) {
+                                        inputElement.focus();
+                                    }
+                                }
+                            }, 300);
+                        }
+                    } else {
+                        // 未授权，显示授权码弹窗
+                        showAuthModal.value = true;
+                        
+                        // 使用setTimeout确保DOM已完全渲染后再聚焦
+                        setTimeout(() => {
+                            if (authInput.value) {
+                                authInput.value.focus();
+                            } else {
+                                const inputElement = document.querySelector('.auth-input');
+                                if (inputElement) {
+                                    inputElement.focus();
+                                }
+                            }
+                        }, 300);
+                    }
+                };
+                
+                // 获取测试类型名称的函数
+                const getTestTypeName = () => {
+                    const testType = localStorage.getItem('currentTestType') || '';
+                    switch(testType) {
+                        case 'scl90': return 'SCL-90 症状自评量表';
+                        case 'sds': return 'SDS 抑郁自评量表';
+                        case 'sas': return 'SAS 焦虑自评量表';
+                        case 'bsq': return 'BSQ 双相情感障碍自评量表';
+                        case 'mbti': return 'MBTI 16种人格测试';
+                        default: return '通用';
+                    }
+                };
+                
+                return {
+                    showAuthModal,
+                    authCode,
+                    authError,
+                    authErrorMessage,
+                    authInput,
+                    verifyAuthCode,
+                    cancelAuth,
+                    startTest,
+                    getTestTypeName
+                };
+            }
+        }).mount('#app');
+    </script>
+    <!-- 底部导航栏 -->
+    <nav class="footer-nav">
+        <a href="" class="nav-item active">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-text">首页</div>
+        </a>
+        <a href="mytests.html" class="nav-item">
+            <div class="nav-icon">📊</div>
+            <div class="nav-text">我的测试</div>
+        </a>
+        <a href="service.html" class="nav-item">
+            <div class="nav-icon">💬</div>
+            <div class="nav-text">客服</div>
+        </a>
+    </nav>
+</body>
+</html>
